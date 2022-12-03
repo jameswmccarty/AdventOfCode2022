@@ -76,24 +76,20 @@ Both parts of this puzzle are complete! They provide two gold stars: **
 if __name__ == "__main__":
 
 	def pri(line):
-		shared = set(line[0:len(line)//2]).intersection(set(line[len(line)//2:])).pop()
-		if shared.islower():
-			return(ord(shared)-96)
-		return(ord(shared)-38)
-
-	def find_badge_pri(line):
-		a,b,c = line[0],line[1],line[2]
-		shared = set(a).intersection(set(b)).intersection(set(c)).pop()
+		shared = set(line.pop())
+		while len(line) > 0:
+			shared = shared.intersection(set(line.pop()))
+		shared = shared.pop()
 		if shared.islower():
 			return(ord(shared)-96)
 		return(ord(shared)-38)
 
 	# Part 1 Solution
 	with open("day03_input", "r") as infile:
-		print(sum( [ pri(line.strip()) for line in infile.readlines() ] ))
+		print(sum( [ pri([line.strip()[0:len(line.strip())//2], line.strip()[len(line.strip())//2:]]) for line in infile.readlines() ] ))
 
 	# Part 2 Solution
 	with open("day03_input", "r") as infile:
 		rucks = infile.read().split('\n')
-	print(sum( [ find_badge_pri(rucks[i:i+3]) for i in range(0,len(rucks)-1,3) ] ))
+	print(sum( [ pri(rucks[i:i+3]) for i in range(0,len(rucks)-1,3) ] ))
 
