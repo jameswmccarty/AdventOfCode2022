@@ -75,14 +75,15 @@ Both parts of this puzzle are complete! They provide two gold stars: **
 
 if __name__ == "__main__":
 
-	def pri(line):
-		shared = set(line.pop())
-		while len(line) > 0:
-			shared = shared.intersection(set(line.pop()))
+	# return priority value of one or more groups
+	def pri(groups):
+		shared = set(groups.pop())
+		while len(groups) > 0:
+			shared = shared.intersection(set(groups.pop())) # find intersection of all groups
 		shared = shared.pop()
 		if shared.islower():
-			return(ord(shared)-96)
-		return(ord(shared)-38)
+			return ord(shared)-96
+		return ord(shared)-38
 
 	# Part 1 Solution
 	with open("day03_input", "r") as infile:
