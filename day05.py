@@ -145,6 +145,20 @@ if __name__ == "__main__":
 		stacks[src] = stacks[src][0:len(stacks[src])-int(line[1])]
 		stacks[dst] += sub_stack
 
+	# general method -- use slices vice calls to push/pop
+	# not used
+	def stack_move(line,retainOrder=False):
+		global stacks
+		line = line.split(' ')
+		src = int(line[3])-1
+		dst = int(line[5])-1
+		sub_stack = stacks[src][-int(line[1]):]
+		if not retainOrder:
+			sub_stack = sub_stack[::-1]
+		stacks[src] = stacks[src][0:len(stacks[src])-int(line[1])]
+		stacks[dst] += sub_stack		
+
+
 	# Part 1 Solution
 	with open("day05_input", "r") as infile:
 		for line in infile.readlines():
