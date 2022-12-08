@@ -92,15 +92,19 @@ if __name__ == "__main__":
 		for i in range(x-1,-1,-1):
 			if forest[(x,y)] <= forest[(i,y)]:
 				west = False
+				break
 		for i in range(x+1,max_x):
 			if forest[(x,y)] <= forest[(i,y)]:
 				east = False
+				break
 		for j in range(y-1,-1,-1):
 			if forest[(x,y)] <= forest[(x,j)]:
 				north = False
+				break
 		for j in range(y+1,max_y):
 			if forest[(x,y)] <= forest[(x,j)]:
 				south = False
+				break
 		return True in [north,south,east,west]
 
 	def scenic_score(forest,x,y,max_x,max_y):
