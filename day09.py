@@ -693,8 +693,9 @@ Both parts of this puzzle are complete! They provide two gold stars: **
 
 """
 
-rope = [ (0,0) for _ in range(2) ]
-tail_visited = set()
+rope = [ (0,0) for _ in range(10) ] # 10 element rope
+p1_visited   = set() # 2nd knot in rope (or rope of length 2)
+p2_visited   = set() # 10th knot
 
 def exec_move(move):
 	global rope
@@ -725,22 +726,18 @@ def exec_move(move):
 			else:
 				#No movement down the rest of the rope
 				break
-			tail_visited.add(rope[-1])
+		p1_visited.add(rope[1])
+		p2_visited.add(rope[-1])
 
 if __name__ == "__main__":
 
 	# Part 1 Solution
-	tail_visited.add(rope[-1])
+	p1_visited.add(rope[1])
+	p2_visited.add(rope[-1])
 	with open("day09_input","r") as infile:
 		for line in infile.readlines():
 			exec_move(line.strip())
-	print(len(tail_visited))
+	print(len(p1_visited))
 
 	# Part 2 Solution
-	rope = [ (0,0) for _ in range(10) ]
-	tail_visited = set()
-	tail_visited.add(rope[-1])
-	with open("day09_input","r") as infile:
-		for line in infile.readlines():
-			exec_move(line.strip())
-	print(len(tail_visited))
+	print(len(p2_visited))
