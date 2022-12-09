@@ -687,63 +687,60 @@ Now, the tail (9) visits 36 positions (including s) at least once:
 
 Simulate your complete series of motions on a larger rope with ten knots. How many positions does the tail of the rope visit at least once?
 
+Your puzzle answer was 2661.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
 """
 
-head = (0,0)
-tail = (0,0)
+rope = [ (0,0) for _ in range(2) ]
 tail_visited = set()
 
-# test the need to move tail based on pos of head, and adjust tail position
-def check_tail_and_move(move_dir):
-	global head,tail
-	global tail_visited
-	x1,y1 = head
-	x2,y2 = tail
-	#If the head is ever two steps directly up, down, left, or right from the tail, the tail must also move one step in that direction
-	if (abs(x2-x1) == 2 and y2==y1) or (abs(y2-y1) == 2 and x2==x1):
-		if move_dir == 'R':
-			tail = (x2+1,y2)
-		elif move_dir == 'L':
-			tail = (x2-1,y2)
-		elif move_dir == 'U':
-			tail = (x2,y2-1)
-		elif move_dir == 'D':
-			tail = (x2,y2+1)
-	#Otherwise, if the head and tail aren't touching and aren't in the same row or column, the tail always moves one step diagonally to keep up
-	elif abs(x2-x1) == 2 or abs(y2-y1) == 2:
-		if move_dir == 'R':
-			tail = (x2+1,y1)
-		elif move_dir == 'L':
-			tail = (x2-1,y1)
-		elif move_dir == 'U':
-			tail = (x1,y2-1)
-		elif move_dir == 'D':
-			tail = (x1,y2+1)
-	tail_visited.add(tail)
-
 def exec_move(move):
-	global head,tail
+	global rope
 	move_dir, steps = move.split(' ')
 	for _ in range(int(steps)):
 		if move_dir == 'R':
-			head = (head[0]+1,head[1])
+			rope[0] = (rope[0][0]+1,rope[0][1])
 		elif move_dir == 'L':
-			head = (head[0]-1,head[1])
+			rope[0] = (rope[0][0]-1,rope[0][1])
 		elif move_dir == 'U':
-			head = (head[0],head[1]-1)
+			rope[0] = (rope[0][0],rope[0][1]-1)
 		elif move_dir == 'D':
-			head = (head[0],head[1]+1)
-		check_tail_and_move(move_dir)
+			rope[0] = (rope[0][0],rope[0][1]+1)
+		for i in range(1,len(rope)):
+			x1,y1 = rope[i-1] # lead knot
+			x2,y2 = rope[i]   # next knot
+			delta = (x2-x1,y2-y1)
+			#If the head is ever two steps directly up, down, left, or right from the tail, the tail must also move one step in that direction
+			# Direction of motion for the next knot remains the same
+			if (abs(delta[0]) == 2 and delta[1] == 0) or (abs(delta[1]) == 2 and delta[0] == 0):
+				dx,dy = delta[0]//2,delta[1]//2
+				rope[i] = (x2-dx,y2-dy)
+			elif abs(delta[0]) >= 2 or abs(delta[1]) >= 2:
+			#Otherwise, if the head and tail aren't touching and aren't in the same row or column, the tail always moves one step diagonally to keep up
+			# This may change the direction of motion for the next knot
+				dx,dy = delta[0]//abs(delta[0]),delta[1]//abs(delta[1])
+				rope[i] = (x2-dx,y2-dy)
+			else:
+				#No movement down the rest of the rope
+				break
+			tail_visited.add(rope[-1])
 
 if __name__ == "__main__":
 
 	# Part 1 Solution
-
-	tail_visited.add(tail)
+	tail_visited.add(rope[-1])
 	with open("day09_input","r") as infile:
 		for line in infile.readlines():
 			exec_move(line.strip())
 	print(len(tail_visited))
 
 	# Part 2 Solution
-
+	rope = [ (0,0) for _ in range(10) ]
+	tail_visited = set()
+	tail_visited.add(rope[-1])
+	with open("day09_input","r") as infile:
+		for line in infile.readlines():
+			exec_move(line.strip())
+	print(len(tail_visited))
