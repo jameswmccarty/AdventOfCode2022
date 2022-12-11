@@ -309,6 +309,10 @@ After 10000 rounds, the two most active monkeys inspected items 52166 and 52013 
 
 Worry levels are no longer divided by three after each item is inspected; you'll need to find another way to keep your worry levels manageable. Starting again from the initial state in your puzzle input, what is the level of monkey business after 10000 rounds?
 
+Your puzzle answer was 15048718170.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
 """
 
 class monkey:
@@ -336,6 +340,25 @@ class monkey:
 				throw,factor = self.op.split(' + ')
 				current += int(factor)
 			current //= 3
+			if current % self.test == 0:
+				monkeys[self.true_idx].items.append(current)
+			else:
+				monkeys[self.false_idx].items.append(current)
+
+	def do_inspections2(self,modulus):
+		global monkeys
+		while len(self.items) > 0:
+			current = self.items.pop(0)
+			self.inspected_total += 1
+			if 'old * old' in self.op:
+				current *= current
+			elif '*' in self.op:
+				throw,factor = self.op.split(' * ')
+				current *= int(factor)
+			elif '+' in self.op:
+				throw,factor = self.op.split(' + ')
+				current += int(factor)
+			current %= modulus
 			if current % self.test == 0:
 				monkeys[self.true_idx].items.append(current)
 			else:
@@ -392,4 +415,20 @@ if __name__ == "__main__":
 	print(activity[0]*activity[1])
 
 	# Part 2 Solution
+	monkeys = []
+	with open("day11_input","r") as infile:
+		inputs = infile.read().strip().split('\n\n')
+		for block in inputs:
+			block = block.split('\n')
+			parse_monkey(block)
 
+	modulus = 1
+	for m in monkeys:
+		modulus *= m.test
+
+	for _ in range(10000):
+		for m in monkeys:
+			m.do_inspections2(modulus)
+
+	activity = sorted([m.inspected_total for m in monkeys],reverse=True)
+	print(activity[0]*activity[1])
