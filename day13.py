@@ -153,7 +153,13 @@ Afterward, locate the divider packets. To find the decoder key for this distress
 
 Organize all of the packets into the correct order. What is the decoder key for the distress signal?
 
+Your puzzle answer was 25038.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
 """
+
+import functools
 
 # True 1, False -1, Unk 0
 
@@ -199,5 +205,15 @@ if __name__ == "__main__":
 	print(total)
 
 	# Part 2 Solution
+	with open("day13_input","r") as infile:
+		blocks = infile.read().split('\n\n')
+	blocks.append("[[2]]\n[[6]]")
+	signals = []
+	for block in blocks:
+		l,r = block.strip().split('\n')
+		signals.append(eval(l))
+		signals.append(eval(r))
+	signals = sorted(signals,key=functools.cmp_to_key(compare),reverse=True)
+	print((signals.index([[2]])+1)*(signals.index([[6]])+1))
 
 
