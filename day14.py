@@ -238,6 +238,23 @@ def parse_line(line):
 				rocks.add((x,y0))
 		x0,y0 = x1,y1
 
+def pretty_print():
+	min_x = min(min([ x[0] for x in sands ]), min([ x[0] for x in rocks ]))-1
+	max_x = max(max([ x[0] for x in sands ]), max([ x[0] for x in rocks ]))+1
+	min_y = min(min([ x[1] for x in sands ]), min([ x[1] for x in rocks ]))-1
+	max_y = max(max([ x[1] for x in sands ]), max([ x[1] for x in rocks ]))+1
+	max_x -= min_x
+	max_y -= min_y
+	for j in range(max_y):
+		for i in range(max_x):
+			if (i+min_x,j+min_y) in rocks:
+				print('#',end='')
+			elif (i+min_x,j+min_y) in sands:
+				print('o',end='')
+			else:
+				print('.',end='')
+		print()
+
 if __name__ == "__main__":
 
 	# Part 1 Solution
@@ -267,4 +284,5 @@ if __name__ == "__main__":
 			break
 		made_sand += 1
 	print(made_sand+1)
+	pretty_print()
 
