@@ -115,6 +115,10 @@ In the example above, the search space is smaller: instead, the x and y coordina
 
 Find the only possible position for the distress beacon. What is its tuning frequency?
 
+Your puzzle answer was 12625383204261.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
 """
 
 sensors = set()
@@ -126,7 +130,6 @@ def dist(p1,p2):
 	x1,y1 = p1
 	x2,y2 = p2
 	return abs(x2-x1)+abs(y2-y1)
-
 
 # determine distance of a given point to nearest sensor
 # return number of steps and beacon found
@@ -153,6 +156,35 @@ def in_range_of_any_sensor(pt):
 			return True
 	return False
 
+# Given a sensors, provide an x min and max for a given y
+# where a beacon cannot be present, or None if no overlap
+# of range
+def overlap_range(scan_y,sensor):
+	x,y   = sensor
+	reach = dist_measures[sensor]
+	dy = dist(sensor,(x,scan_y))
+	if abs(dy) >= reach:
+		return None
+	else:
+		dy -= reach
+		return [x-abs(dy),x+abs(dy)]
+
+# with assistance from https://www.geeksforgeeks.org/merging-intervals/
+def mergeIntervals(intervals):
+	# Sort the array on the basis of start values of intervals.
+	intervals.sort()
+	stack = []
+	# insert first interval into stack
+	stack.append(intervals[0])
+	for i in intervals[1:]:
+		# Check for overlapping interval,
+		# if interval overlap
+		if stack[-1][0] <= i[0] <= stack[-1][-1]:
+			stack[-1][-1] = max(stack[-1][-1], i[-1])
+		else:
+			stack.append(i)
+	return stack
+
 def parse_line(line):
 	s,b = line.split(':')
 	s,b = s.split(' at ')[1],b.split(' at ')[1]
@@ -170,21 +202,31 @@ if __name__ == "__main__":
 	with open('day15_input','r') as infile:
 		for line in infile.readlines():
 			parse_line(line.strip())
+	scan_y = 2000000
+	"""
 	error_bars = max(dist_measures.values())
 	min_x = min(min([ x[0] for x in beacons ]),min([ x[0] for x in sensors])) - error_bars
 	max_x = max(max([ x[0] for x in beacons ]),max([ x[0] for x in sensors])) + error_bars
 	cannot_contain = 0
-	scan_y = 2000000
 	for x in range(min_x,max_x):
-		#dist,nearest_sensor= bfs((x,10))
-		#print('Location ',x,' is ',dist,' from ',nearest_sensor,'[',dist_measures[nearest_sensor],']')
-		#if dist <= dist_measures[nearest_sensor] and (x,10) not in beacons:
-		#	cannot_contain += 1
-		#	print(x)
-		if in_range_of_any_sensor((x,scan_y)) and (x,scan_y) not in beacons:
+		if in_range_of_any_sensor((x,scan_y)):# and (x,scan_y) not in beacons:
 			cannot_contain += 1
 	print(cannot_contain)
+	"""
+	ranges = [ overlap_range(scan_y,sensor) for sensor in sensors ]
+	ranges = [ x for x in ranges if x != None ]
+	compressed_ranges = mergeIntervals(ranges)
+	total = 0
+	for r in compressed_ranges:
+		total += r[1]+1 - r[0]
+	print(total-len( [ b for b in beacons if b[1] == scan_y ] ))
 
 	# Part 2 Solution
-
+	for y in range(4000000,-1,-1):
+		ranges = [ overlap_range(y,sensor) for sensor in sensors ]
+		ranges = [ x for x in ranges if x != None ]
+		compressed_ranges = mergeIntervals(ranges)
+		if len(compressed_ranges) > 1:
+			print((compressed_ranges[1][0]-1)*4000000+y)
+			break
 
