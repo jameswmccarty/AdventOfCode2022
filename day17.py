@@ -352,11 +352,16 @@ In the example above, the tower would be 1514285714288 units tall!
 
 How tall will the tower be after 1000000000000 rocks have stopped?
 
+Your puzzle answer was 1566272189352.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
 """
 
 stopped = set()
 moves = ''
 move_idx = 0
+max_height = 0
 
 class shape:
 
@@ -367,10 +372,10 @@ class shape:
 				{ (0,0),(1,0),(0,1),(1,1) } ]
 
 	def next_start(self):
-		global stopped
+		global stopped, max_height
 		if len(stopped) == 0:
 			return (2,4)
-		return(2,max( [ y for x,y in stopped ] )+4)
+		return(2,max_height+4)
 
 	def __init__(self,order):
 		self.coords = set()
@@ -380,7 +385,7 @@ class shape:
 			self.coords.add((x+dx,y+dy))
 
 	def move(self):
-		global stopped, moves, move_idx
+		global stopped, moves, move_idx, max_height
 		d = moves[move_idx%len(moves)]
 		move_idx += 1
 		# Move right or left
@@ -399,6 +404,7 @@ class shape:
 			return True
 		else:
 			stopped.update(self.coords)
+			max_height = max(max_height,max([ y for x,y in self.coords]))
 			return False
 
 if __name__ == "__main__":
@@ -413,8 +419,38 @@ if __name__ == "__main__":
 		while current_shape.move():
 			continue
 		shape_count += 1
-	print(max( [ y for x,y in stopped ]))
+	print(max_height)
 
 	# Part 2 Solution
-
-
+	max_height = 0
+	stopped = set()
+	shape_count = 0
+	move_idx = 0
+	heights_at_shapes = dict()
+	heights_at_states = dict()
+	counts_at_states  = dict()
+	seen = set()
+	while True:
+		current_shape = shape(shape_count)
+		while current_shape.move(): # drop the next shape
+			continue
+		key = (shape_count % 5, move_idx%len(moves))
+		if key in seen:
+			if len(heights_at_states[key]) >= 2:
+				delta = heights_at_states[key][-1] - heights_at_states[key][-2]
+				rocks_needed = 1000000000000 - shape_count
+				cycle_size = counts_at_states[key][-1] - counts_at_states[key][-2]
+				if rocks_needed % cycle_size == 0:
+					total = max_height + delta*rocks_needed//cycle_size
+					print(total-1)
+					break
+		seen.add(key)
+		if key in heights_at_states:
+			heights_at_states[key].append(max_height)
+		else:
+			heights_at_states[key] = [max_height]
+		if key in counts_at_states:
+			counts_at_states[key].append(shape_count)
+		else:
+			counts_at_states[key] = [shape_count]
+		shape_count += 1
