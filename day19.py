@@ -383,6 +383,10 @@ You no longer have enough blueprints to worry about quality levels. Instead, for
 
 Don't worry about quality levels; instead, just determine the largest number of geodes you could open using each of the first three blueprints. What do you get if you multiply these numbers together?
 
+Your puzzle answer was 7644.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
 """
 
 """
@@ -485,4 +489,10 @@ if __name__ == "__main__":
 	print(sol)
 
 	# Part 2 Solution
+	sol = 1
+	for i in range(3):
+		max_geodes = 0
+		dfs(blueprints[i],1,0,0,0,0,0,0,0,32)
+		sol *= max_geodes
+	print(sol)
 
