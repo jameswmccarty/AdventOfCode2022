@@ -258,6 +258,9 @@ In the above example, the first trip to the goal takes 18 minutes, the trip back
 
 What is the fewest number of minutes required to reach the goal, go back to the start, then reach the goal again?
 
+Your puzzle answer was 997.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
 
 """
 
@@ -313,10 +316,10 @@ def bfs(start,end,walls,blizzards):
 						q.append((step,blizzards,t+1))
 						seen.add(state)
 
-def time_map_bfs(start,end,open_at_t):
+def time_map_bfs(start,end,open_at_t,start_t=0):
 	deltas = ((0,1),(1,0),(0,-1),(-1,0),(0,0))
 	q = deque()
-	q.append((start,0))
+	q.append((start,start_t))
 	seen = set()
 	while len(q) > 0:
 		pos,t = q.popleft()
@@ -386,10 +389,14 @@ if __name__ == "__main__":
 			end = (end_x,y-1)
 			break
 		end_x += 1
-	print(time_map_bfs(start,end,time_map(walls,blizzards)))
+	open_map = time_map(walls,blizzards)
+	t1 = time_map_bfs(start,end,open_map)
+	print(t1)
 
 	# Part 2 Solution
-
+	t2 = time_map_bfs(end,start,open_map,t1)
+	t3 = time_map_bfs(start,end,open_map,t2)
+	print(t3)
 
 
 
