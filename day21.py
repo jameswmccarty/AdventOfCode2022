@@ -58,6 +58,12 @@ In the above example, the number you need to yell to pass root's equality test i
 
 What number do you yell to pass root's equality test?
 
+What number do you yell to pass root's equality test?
+
+Your puzzle answer was 3093175982595.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
 """
 
 class inode:
@@ -100,6 +106,11 @@ class inode:
 			if self.op == '/':
 				return self.nodes_by_name[self.left].value() // self.nodes_by_name[self.right].value()
 
+	def eq(self):
+		#print(self.nodes_by_name[self.left].value(),self.nodes_by_name[self.right].value())
+		if self.nodes_by_name[self.left].value() == self.nodes_by_name[self.right].value():
+			return True
+		return False
 
 if __name__ == "__main__":
 
@@ -112,7 +123,13 @@ if __name__ == "__main__":
 			node_bin[a_node.name] = a_node
 	print(node_bin["root"].value())
 
-
 	# Part 2 Solution
-
+	i = 3093175982595 # Manual estimate based on left/right root values and trend with i increasing or decreasing | not a general solution
+	while True:
+		#print(i,end=' ')
+		node_bin["humn"].contents = i
+		if node_bin["root"].eq():
+			print(i)
+			break
+		i -= 1
 
