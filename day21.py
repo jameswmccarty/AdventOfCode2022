@@ -124,12 +124,32 @@ if __name__ == "__main__":
 	print(node_bin["root"].value())
 
 	# Part 2 Solution
-	i = 3093175982595 # Manual estimate based on left/right root values and trend with i increasing or decreasing | not a general solution
-	while True:
-		#print(i,end=' ')
-		node_bin["humn"].contents = i
+
+	is_left = False
+	node_bin["humn"].contents = 0
+	left_init  = node_bin[node_bin["root"].left].value()
+	node_bin["humn"].contents = 1000
+	if node_bin[node_bin["root"].left].value() != left_init:
+		is_left = True
+
+	l,r = 0,2**64
+	while l <= r:
+		mid = (l+r) // 2
+		node_bin["humn"].contents = mid
 		if node_bin["root"].eq():
-			print(i)
+			while node_bin["root"].eq():
+				mid -= 1
+				node_bin["humn"].contents = mid
+			print(mid+1)
 			break
-		i -= 1
+		if is_left:
+			if node_bin[node_bin["root"].left].value() > node_bin[node_bin["root"].right].value():
+				l = mid
+			else:
+				r = mid
+		elif not is_left:
+			if node_bin[node_bin["root"].right].value() < node_bin[node_bin["root"].left].value():
+				l = mid
+			else:
+				r = mid
 
