@@ -149,7 +149,7 @@ if __name__ == "__main__":
 				r = mid
 		elif not is_left:
 			if node_bin[node_bin["root"].right].value() < node_bin[node_bin["root"].left].value():
-				l = mid
-			else:
 				r = mid
+			else:
+				l = mid
 
