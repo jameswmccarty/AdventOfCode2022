@@ -114,6 +114,8 @@ As you do, a very young Elf - one you recognize from the expedition team - appro
 
 Only 49 stars to go.
 
+You make a smoothie with all fifty stars and deliver it to the reindeer! The sleigh is already warmed up by the time they finish eating.
+
 """
 
 import heapq
