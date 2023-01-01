@@ -284,5 +284,5 @@ if __name__ == "__main__":
 			break
 		made_sand += 1
 	print(made_sand+1)
-	pretty_print()
+	#pretty_print()
 
