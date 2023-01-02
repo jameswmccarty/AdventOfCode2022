@@ -86,9 +86,13 @@ def unmatched2(check_set,cubes):
 			total_unmatched += adjacent
 	return total_unmatched
 
+known_bubble = set()
+
 # Determine if a location is part of an interior bubble
+# keep track of all coordinates determined to be part of
+# a bubble
 def loc_is_part_of_a_bubble(loc):
-	global min_x,max_x,min_y,max_y,min_z,max_z
+	global min_x,max_x,min_y,max_y,min_z,max_z,known_bubble
 	if loc in cubes:
 		return False
 	seen = set()
@@ -102,6 +106,9 @@ def loc_is_part_of_a_bubble(loc):
 			if (x+dx,y+dy,z+dz) not in cubes and (x+dx,y+dy,z+dz) not in seen:
 				seen.add((x+dx,y+dy,z+dz))
 				q.append((x+dx,y+dy,z+dz))
+	for entry in seen:
+		known_bubble.add(entry)
+	known_bubble.add(loc)
 	return True
 
 if __name__ == "__main__":
@@ -124,11 +131,9 @@ if __name__ == "__main__":
 	min_z = min(z[2] for z in cubes)
 	max_z = max(z[2] for z in cubes)
 
-	bubble_parts = set()
-
 	for x in range(min_x,max_x):
 		for y in range(min_y,max_y):
 			for z in range(min_z,max_z):
-				if loc_is_part_of_a_bubble((x,y,z)):
-					bubble_parts.add((x,y,z))
-	print(surf_area - unmatched2(bubble_parts,cubes))
+				if (x,y,z) not in known_bubble:
+					loc_is_part_of_a_bubble((x,y,z))
+	print(surf_area - unmatched2(known_bubble,cubes))
